@@ -2,9 +2,34 @@
 
 Para fácilitar la app y su manera que trabaja con las imagenes se creo una API que aisla las responsabilidaddes de las aplicaciones que se involucran al sistema. +
 
-Consta de un contenedor docker, cada imagen que se suba a la app sera enviada con este microservicio que realizara las siguientes acciones: +
+Consta de un contenedor docker, cada imagen que se suba a la app será enviada con este microservicio que realizara las siguientes acciones: +
 
 **POST**: Recibe la imagen y genera 3 versiones de ella con distintas medidas. +
 **GET**: Devolverá la url unica de la imagen optimizada. +
-**PUT**: Actualiza la imagen +
-**DELETE**: Borra la imagen +
+
+== Ejemplos de uso de la api
+
+[source, php]
+----
+if ($request->hasFile('imatge')) {
+            foreach ($request->file('imatge') as $file) {
+                Http::post(url('http://localhost:8080/api/api/image'),[
+                    'imatge' => [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $file->getRealPath(),
+                        'type' => $file->getClientMimeType(),
+                        'esdeveniment' => $esdevenimentId,
+                    ]
+                ]);
+            }
+        }
+----
+
+Se llama a la api con el Http::post y se coloca la url dentro, al ser post detecta la función para guardar la imagen a la bd, para guardarla correctamente necesita el nombre del archivo, su path y que tipo de archivo es.
+
+[source, php]
+----
+$imatge = Http::get(url('http://localhost:8080/api/api/image/'.$esdeveniment_id));
+----
+
+Con el siguiente url de la api, recogera la primera imagen del evento que se coloque con su id.
